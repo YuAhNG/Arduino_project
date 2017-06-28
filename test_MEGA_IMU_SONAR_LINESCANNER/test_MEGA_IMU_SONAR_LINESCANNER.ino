@@ -16,11 +16,57 @@ IMU模块57600波特率
 */
 #include <Wire.h>
 
-//
+#include <ros.h>
+#include <dependant_api/Int16Array.h>
+#include "~/sketchbook/libraries/ros_lib/std_msgs/String.h"
+
 #define KS103ADDR 0x74    // Address of the 0xe8  选择串口地址，共有20个
 #define Reg 0x02        // Command byte 选择02探测指令
 byte highByte = 0x00;   // Stores high byte from ranging
 byte lowByte = 0x00;   // Stored low byte from ranging
+
+//for line scanner
+int sensor_number = 16;
+int print_value;
+int led_pin = 12;
+int led_sw = 0;
+
+int forward_pin0 = 22;
+int forward_pin1 = 23;
+int forward_pin2 = 24;
+int forward_pin3 = 25;
+int forward_pin4 = 26;
+int forward_pin5 = 27;
+int forward_pin6 = 28;
+int forward_pin7 = 29;
+
+int backward_pin0 = 30;
+int backward_pin1 = 31;
+int backward_pin2 = 32;
+int backward_pin3 = 33;
+int backward_pin4 = 34;
+int backward_pin5 = 35;
+int backward_pin6 = 36;
+int backward_pin7 = 37;
+
+
+
+
+
+
+  //callback function  led control
+void messageCb(const dependant_api::Int16Array& msg) {
+  if(msg.data[0] > 0)
+    digitalWrite(led_pin,HIGH);
+  else
+    digitalWrite(led_pin,LOW);
+}
+ros::NodeHandle nh;
+dependant_api::Int16Array analog;
+ros::Publisher ir_line_scanner_pub("ir_raw_data", &analog);
+ros::Subscriber<dependant_api::Int16Array> sub("led_duoduo_2", &messageCb);
+
+
 
 
 void setup() {
@@ -34,7 +80,30 @@ void setup() {
   Wire.write(Reg);                               // Send Reg
   Wire.write(0x71);  // Send 0x72 to set USB Power 三级降噪
   Wire.endTransmission();
+  //for line scanner
+  pinMode(led_pin, OUTPUT);
   
+  pinMode(forward_pin0, INPUT);
+  pinMode(forward_pin1, INPUT);
+  pinMode(forward_pin2, INPUT);
+  pinMode(forward_pin3, INPUT);
+  pinMode(forward_pin4, INPUT);
+  pinMode(forward_pin5, INPUT);
+  pinMode(forward_pin6, INPUT);
+  pinMode(forward_pin7, INPUT);
+  
+  pinMode(backward_pin0, INPUT);
+  pinMode(backward_pin1, INPUT);
+  pinMode(backward_pin2, INPUT);
+  pinMode(backward_pin3, INPUT);
+  pinMode(backward_pin4, INPUT);
+  pinMode(backward_pin5, INPUT);
+  pinMode(backward_pin6, INPUT);
+  pinMode(backward_pin7, INPUT);
+  
+  nh.initNode();
+  nh.advertise(ir_line_scanner_pub);
+  nh.subscribe(sub);   
 }
 
 void loop() {
@@ -56,7 +125,43 @@ void loop() {
   Serial.println(rangeData);
   
   //for LINESCANNER
+  ros::Subscriber<dependant_api::Int16Array> sub("led_duoduo_2", &messageCb);
+  //ros::spin();
   
+  int i, j, k, a[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  a[0]  = digitalRead(forward_pin0);
+  a[1]  = digitalRead(forward_pin1);
+  a[2]  = digitalRead(forward_pin2);
+  a[3]  = digitalRead(forward_pin3);
+  a[4]  = digitalRead(forward_pin4);
+  a[5]  = digitalRead(forward_pin5);
+  a[6]  = digitalRead(forward_pin6);
+  a[7]  = digitalRead(forward_pin7);
+  a[8]  = digitalRead(backward_pin0);
+  a[9]  = digitalRead(backward_pin1);
+  a[10] = digitalRead(backward_pin2);
+  a[11] = digitalRead(backward_pin3);
+  a[12] = digitalRead(backward_pin4);
+  a[13] = digitalRead(backward_pin5);
+  a[14] = digitalRead(backward_pin6);
+  a[15] = digitalRead(backward_pin7);
+  
+  for (k = 0; k < sensor_number; k++)
+    analog.data[k] = a[k];
+  ir_line_scanner_pub.publish(&analog);
+  nh.spinOnce();
+  //delay(18.5);  //使话题频率为50Hz
+  /**/print_value++;
+  if (print_value >= 20)
+  {
+    for (k = 0; k < sensor_number; k++)
+    {
+      Serial.print(a[k]);
+      Serial.print("\t");
+    }
+    Serial.println();
+    print_value = 0;
+  }
   
   
   
