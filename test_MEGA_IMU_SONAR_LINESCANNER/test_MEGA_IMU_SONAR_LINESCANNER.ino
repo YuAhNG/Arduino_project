@@ -18,7 +18,7 @@ IMU模块57600波特率
 
 #include <ros.h>
 #include <dependant_api/Int16Array.h>
-#include "~/sketchbook/libraries/ros_lib/std_msgs/String.h"
+#include "std_msgs/String.h"
 
 #define KS103ADDR 0x74    // Address of the 0xe8  选择串口地址，共有20个
 #define Reg 0x02        // Command byte 选择02探测指令
@@ -49,7 +49,7 @@ int backward_pin5 = 35;
 int backward_pin6 = 36;
 int backward_pin7 = 37;
 
-
+int coef_digitalread = 1000; //Make digital read compatible with previous analog read
 
 
 
@@ -129,22 +129,22 @@ void loop() {
   //ros::spin();
   
   int i, j, k, a[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  a[0]  = digitalRead(forward_pin0);
-  a[1]  = digitalRead(forward_pin1);
-  a[2]  = digitalRead(forward_pin2);
-  a[3]  = digitalRead(forward_pin3);
-  a[4]  = digitalRead(forward_pin4);
-  a[5]  = digitalRead(forward_pin5);
-  a[6]  = digitalRead(forward_pin6);
-  a[7]  = digitalRead(forward_pin7);
-  a[8]  = digitalRead(backward_pin0);
-  a[9]  = digitalRead(backward_pin1);
-  a[10] = digitalRead(backward_pin2);
-  a[11] = digitalRead(backward_pin3);
-  a[12] = digitalRead(backward_pin4);
-  a[13] = digitalRead(backward_pin5);
-  a[14] = digitalRead(backward_pin6);
-  a[15] = digitalRead(backward_pin7);
+  a[0]  = coef_digitalread * digitalRead(forward_pin0);
+  a[1]  = coef_digitalread * digitalRead(forward_pin1);
+  a[2]  = coef_digitalread * digitalRead(forward_pin2);
+  a[3]  = coef_digitalread * digitalRead(forward_pin3);
+  a[4]  = coef_digitalread * digitalRead(forward_pin4);
+  a[5]  = coef_digitalread * digitalRead(forward_pin5);
+  a[6]  = coef_digitalread * digitalRead(forward_pin6);
+  a[7]  = coef_digitalread * digitalRead(forward_pin7);
+  a[8]  = coef_digitalread * digitalRead(backward_pin0);
+  a[9]  = coef_digitalread * digitalRead(backward_pin1);
+  a[10] = coef_digitalread * digitalRead(backward_pin2);
+  a[11] = coef_digitalread * digitalRead(backward_pin3);
+  a[12] = coef_digitalread * digitalRead(backward_pin4);
+  a[13] = coef_digitalread * digitalRead(backward_pin5);
+  a[14] = coef_digitalread * digitalRead(backward_pin6);
+  a[15] = coef_digitalread * digitalRead(backward_pin7);
   
   for (k = 0; k < sensor_number; k++)
     analog.data[k] = a[k];
