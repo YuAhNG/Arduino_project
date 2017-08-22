@@ -118,33 +118,24 @@ void loop() {
   //ros::spin();
   
   int i, j, k, a[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  ////a[0]  = coef_digitalread * digitalRead(forward_pin0);
-  //a[1]  = coef_digitalread * (1 - digitalRead(forward_pin1));
-  //a[0]  = a[1];
-  //a[2]  = coef_digitalread * digitalRead(forward_pin2);
-  //a[3]  = coef_digitalread * digitalRead(forward_pin3);
-  //a[4]  = coef_digitalread * digitalRead(forward_pin4);
-  //a[5]  = coef_digitalread * digitalRead(forward_pin5);
-  //a[6]  = coef_digitalread * (1 - digitalRead(forward_pin6));
-  ////a[7]  = coef_digitalread * digitalRead(forward_pin7);
-  //a[7]  = a[6];
+  
   a[0]  = coef_digitalread * (1 - digitalRead(backward_pin0));
   a[1]  = coef_digitalread * (1 - digitalRead(backward_pin1));
-  a[2] = coef_digitalread * (1 - digitalRead(backward_pin2));
-  a[3] = coef_digitalread * ( digitalRead(backward_pin3));
-  a[4] = coef_digitalread * ( digitalRead(backward_pin4));
-  a[5] = coef_digitalread * (1 - digitalRead(backward_pin5));
-  a[6] = coef_digitalread * (1 - digitalRead(backward_pin6));
-  a[7] = coef_digitalread * (1 - digitalRead(backward_pin7));
+  a[2]  = coef_digitalread * (1 - digitalRead(backward_pin2));
+  a[3]  = coef_digitalread * (1 - digitalRead(backward_pin3));
+  a[4]  = coef_digitalread * (1 - digitalRead(backward_pin4));
+  a[5]  = coef_digitalread * (1 - digitalRead(backward_pin5));
+  a[6]  = coef_digitalread * (1 - digitalRead(backward_pin6));
+  a[7]  = coef_digitalread * (1 - digitalRead(backward_pin7));
   
-  a[8] = 0;
-  a[9] = 0;
-  a[10] = 0;
-  a[11] = 0;
-  a[12] = 0;
-  a[13] = 0;
-  a[14] = 0;
-  a[15] = 0;
+  a[8]  = coef_digitalread * (1 - digitalRead(forward_pin0));
+  a[9]  = coef_digitalread * (1 - digitalRead(forward_pin1));
+  a[10] = coef_digitalread * (1 - digitalRead(forward_pin2));
+  a[11] = coef_digitalread * (1 - digitalRead(forward_pin3));
+  a[12] = coef_digitalread * (1 - digitalRead(forward_pin4));
+  a[13] = coef_digitalread * (1 - digitalRead(forward_pin5));
+  a[14] = coef_digitalread * (1 - digitalRead(forward_pin6));
+  a[15] = coef_digitalread * (1 - digitalRead(forward_pin7));
   
   for (k = 0; k < sensor_number; k++)
     analog.data[k] = a[k];
